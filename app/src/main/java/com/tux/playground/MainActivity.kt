@@ -6,6 +6,7 @@ import android.util.Log
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.factory
 import org.kodein.di.generic.instance
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,11 +23,17 @@ class MainActivity : AppCompatActivity(), KodeinAware, Callback<List<Repo>> {
   }
 
   override val kodein: Kodein by closestKodein()
-  val githubService: GitHubService by instance()
+  val githubService by instance<GitHubService>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+
+    val factoryString by factory<Int, String>("factory")
+    Log.d("debug", ": ${factoryString(5)}")
+
+    val providerString by instance<String>("provider")
+    Log.d("debug", ": $providerString")
 
     // need github service
     val repos = githubService.listRepos("octocat")
