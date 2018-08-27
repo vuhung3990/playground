@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jetbrains.dokka-android'
 
 android {
     compileSdkVersion 27
@@ -22,9 +21,23 @@ android {
     }
 }
 
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/dokka"
+    // Use to include or exclude non public members.
+    includeNonPublic = true
+    // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
+    reportUndocumented = true
+    skipEmptyPackages = true // Do not create index pages for empty packages
+    noStdlibLink = true
+    // By default, sourceRoots is taken from kotlinTasks, following roots will be appended to it
+    // Short form sourceRoots
+    sourceDirs = files('src/main/java/com/tux/playground')
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'

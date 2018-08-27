@@ -13,10 +13,17 @@ class MainActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
 
     button1.setOnClickListener {
-      Puree.send(ClickLog("page1", "click button 1"))
+      sendLog("page1", "click button 1")
     }
     button2.setOnClickListener {
-      Puree.send(ClickLog("page1", "click button 2"))
+      sendLog("page1", "click button 2")
     }
+  }
+
+  /**
+   * send log event with [page] is activity, [label] is event name or whatever you want
+   */
+  private fun sendLog(page: String, label: String) {
+    Puree.send(ClickLog(page, label))
   }
 }
