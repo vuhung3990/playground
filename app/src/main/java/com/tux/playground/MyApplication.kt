@@ -21,7 +21,7 @@ class MyApplication : Application() {
    * Initial and configure Puree with [PureeConfiguration] in [Application.onCreate], which registers pairs of what and where.
    */
   private fun initPuree() {
-    val addEventTimeFilter = AddEventTimeFilter()
+    val addEventTimeFilter = AddEventTimeFilter(this)
     val evenFilter = EvenFilter()
     Puree.initialize(PureeConfiguration.Builder(this)
         .executor(Executors.newScheduledThreadPool(1)) // optional
