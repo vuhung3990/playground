@@ -4,6 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 
 @Dao
@@ -17,4 +19,10 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE first_name in (:firstName)")
     fun findUserByFirstName(firstName: String): Single<List<User>>
+
+    @Query("SELECT * FROM users")
+    fun findUsers(): Single<List<User>>
+
+    @Insert
+    fun insert(user: List<User>): Array<Long>
 }

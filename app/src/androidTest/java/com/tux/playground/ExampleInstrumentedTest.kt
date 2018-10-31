@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tux.playground.database.DatabaseApp
 import com.tux.playground.database.User
 import com.tux.playground.database.UserDao
+import io.reactivex.Maybe
 import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
@@ -43,5 +44,47 @@ class ExampleInstrumentedTest {
                 .assertValue {
                     it[0].firstName == firstName && it[0].lastName == lastName
                 }
+    }
+
+    @Test
+    fun offlineFirst() {
+        val listUser = listOf(
+                User(firstName = "hung", lastName = "vu"),
+                User(firstName = "peter", lastName = "tux"),
+                User(firstName = "hieu", lastName = "nguyen")
+        )
+
+        // for case 2
+        // mUserDao.insert(listUser)
+        // case1 no data
+        // 1. get data from db
+        mUserDao.findUsers()
+                .filter {
+                    val shouldRequestApi = it.isEmpty()
+
+                    // case2 data exists => just take it
+                    if (!shouldRequestApi) {
+                        println("case 2: have data")
+                        println(it.toString())
+                    }
+                    return@filter shouldRequestApi
+                }
+                // 2. query api -> parse to list object
+                // 3. save into db
+                .flatMap {
+                    Maybe.fromCallable { mUserDao.insert(listUser) }
+                }
+                .flatMapSingle {
+                    mUserDao.findUsers()
+                }
+                .test()
+                // 3 item from db
+                .assertValue {
+                    println("case 1: no data")
+                    println(it.toString())
+                    it.size == 3
+                }
+
+        // case exist data
     }
 }
