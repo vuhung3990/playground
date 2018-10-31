@@ -9,12 +9,12 @@ import io.reactivex.Single
 @Dao
 interface UserDao {
 
-  @Insert
-  fun insert(user: User): Single<Long>
+    @Insert
+    fun insert(user: User): Long
 
-  @Delete
-  fun delete(user: User)
+    @Delete
+    fun delete(user: User)
 
-  @Query("SELECT * FROM users WHERE id in (:firstName)")
-  fun findUserByFirstName(firstName: String): List<User>
+    @Query("SELECT * FROM users WHERE first_name in (:firstName)")
+    fun findUserByFirstName(firstName: String): Single<List<User>>
 }
