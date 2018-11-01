@@ -19,29 +19,41 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
-    private lateinit var mUserDao: UserDao
-    private lateinit var mDb: DatabaseApp
-    @Before
-    fun setUp() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        mDb = Room.inMemoryDatabaseBuilder(appContext, DatabaseApp::class.java).build()
-        mUserDao = mDb.userDao
-    }
 
-    @Test
-    fun testInsertDb() {
-        val firstName = "peter"
-        val lastName = "tux"
-        val user = User(0, firstName, lastName)
+  private lateinit var mUserDao: UserDao
+  private lateinit var mDb: DatabaseApp
+  @Before
+  fun setUp() {
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+    mDb = Room.inMemoryDatabaseBuilder(appContext, DatabaseApp::class.java).build()
+    mUserDao = mDb.userDao
+  }
 
-        Observable
-                // insert data
-                .fromCallable { mUserDao.insert(user) }
-                // get data
-                .flatMapSingle { mUserDao.findUserByFirstName(firstName) }
-                .test()
-                .assertValue {
-                    it[0].firstName == firstName && it[0].lastName == lastName
-                }
-    }
+  @Test
+  fun testInsertDb() {
+    val firstName = "peter"
+    val lastName = "tux"
+    val user = User(0, firstName, lastName)
+
+    Observable
+        // insert data
+        .fromCallable { mUserDao.insert(user) }
+        // get data
+        .flatMapSingle { mUserDao.findUserByFirstName(firstName) }
+        .test()
+        .assertValue {
+          it[0].firstName == firstName && it[0].lastName == lastName
+        }
+  }
+
+  @Test
+  fun testUnique() {
+    val firstName = "peter"
+    val lastName = "tux"
+    val user = User(firstName = firstName, lastName = lastName)
+
+    mUserDao.insert(user)
+    mUserDao.insert(User(firstName = "peter", lastName = "tux1"))
+    mUserDao.insert(User(firstName = "peter1", lastName = "tux1"))
+  }
 }
