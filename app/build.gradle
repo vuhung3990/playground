@@ -35,4 +35,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+
+    implementation 'org.koin:koin-androidx-scope:1.0.2'
+    implementation 'org.koin:koin-androidx-viewmodel:1.0.2'
+    // Koin for Unit tests
+    testImplementation 'org.koin:koin-test:1.0.2'
 }
